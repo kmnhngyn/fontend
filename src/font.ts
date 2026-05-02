@@ -1,14 +1,29 @@
 import { parse as parseFont } from 'opentype.js'
 import type { FontMetadata } from './types'
 
-// handle the metadata key names of the font e.g. fontFamily, license etc.
-// these are called names (a bit confusing lol)
-const handleName = (names: Record<string, Record<string, string>> | undefined, key: string): string | undefined => {
-  if (!names || !names[key]) return undefined
+// opentype.js >= 1.3 nests names by platform: { unicode, macintosh, windows }
+// each platform holds keys like fontFamily -> { en: "...", de: "..." }
+type LangMap = Record<string, string>
+type PlatformNames = Record<string, LangMap>
+type FontNames = { unicode?: PlatformNames; macintosh?: PlatformNames; windows?: PlatformNames } & PlatformNames
 
-  const entry = names[key]
+const handleName = (names: FontNames | undefined, key: string): string | undefined => {
+  if (!names) return undefined
 
-  return entry.en ?? Object.values(entry)[0]
+  const platforms: Array<PlatformNames | undefined> = [names.windows, names.macintosh, names.unicode]
+  for (const platform of platforms) {
+    const entry = platform?.[key]
+    if (entry && typeof entry === 'object') {
+      return entry.en ?? Object.values(entry)[0]
+    }
+  }
+
+  // fallback for older/flat shapes
+  const flat = (names as PlatformNames)[key]
+  if (flat && typeof flat === 'object') {
+    return flat.en ?? Object.values(flat)[0]
+  }
+  return undefined
 }
 
 export async function loadFont(
@@ -22,15 +37,34 @@ export async function loadFont(
     ** react has only the metadata and familyId in state (the string name to reference the font in CSS)
     */
     const buffer = await file.arrayBuffer()
+    return loadFontFromBuffer(buffer, file.name, familyId)
+}
+
+export async function loadFontFromUrl(
+  url: string,
+  fileName: string,
+  familyId: string,
+): Promise<{ metadata: FontMetadata; fontFace: FontFace }> {
+    const res = await fetch(url)
+    if (!res.ok) throw new Error(`Could not fetch font: ${res.status}`)
+    const buffer = await res.arrayBuffer()
+    return loadFontFromBuffer(buffer, fileName, familyId)
+}
+
+async function loadFontFromBuffer(
+  buffer: ArrayBuffer,
+  fileName: string,
+  familyId: string,
+): Promise<{ metadata: FontMetadata; fontFace: FontFace }> {
     const font = parseFont(buffer)
 
-    const names = font.names as unknown as Record<string, Record<string, string>>
-    const ext = file.name.split('.').pop()?.toLowerCase() ?? ''
+    const names = font.names as unknown as FontNames
+    const ext = fileName.split('.').pop()?.toLowerCase() ?? ''
     const format = ext === 'otf' ? 'OpenType (OTF)' : ext === 'ttf' ? 'TrueType (TTF)' : ext.toUpperCase()
 
     // meta data that could be relevant
     const metadata: FontMetadata = {
-      fileName: file.name,
+      fileName,
       format,
       fontFamily: handleName(names, 'fontFamily'),
       fontSubfamily: handleName(names, 'fontSubfamily'),
