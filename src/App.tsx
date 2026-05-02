@@ -3,6 +3,10 @@ import './App.css'
 import { loadFont } from './font';
 import type { FontMetadata } from './types';
 
+const SAMPLE_TEXTS = [
+  'The quick brown fox jumps over the lazy dog bodo.',
+]
+
 function App() {
   const [isDragging, setIsDragging] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -12,6 +16,14 @@ function App() {
   const [familyId, setFamilyId] = useState<string>('')
 
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const [text, setText] = useState(SAMPLE_TEXTS[0])
+  const [fontSize, setFontSize] = useState(72)
+  const [lineHeight, setLineHeight] = useState(1.2)
+  const [letterSpacing, setLetterSpacing] = useState(0)
+  const [wordSpacing, setWordSpacing] = useState(0)
+  const [color, setColor] = useState('#f4a4c0')
+  const [bgColor, setBgColor] = useState('#0056d6')
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault()
@@ -65,28 +77,67 @@ function App() {
       {/* show font preview OR drag drap zone */}
       {metadata ?  (
         // --------- FONT PREVIEW ---------
-        <div>
-          <div
-            contentEditable
-            suppressContentEditableWarning
-            className="outline-none whitespace-pre-wrap break-words"
-            style={{
-              fontFamily: familyId ? `"${familyId}"` : undefined
-            }}
-          >Helllllllo wooorrrllddd!</div>
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[260px_1fr_280px] min-h-0">
+          <aside className="border-r border-neutral-800 p-5 space-y-5 overflow-y-auto">
+            <Slider label="Font size" value={fontSize} min={8} max={400} step={1} unit="px" onChange={setFontSize} />
+            <Slider label="Line height" value={lineHeight} min={0.5} max={3} step={0.05} onChange={setLineHeight} />
+            <Slider label="Letter spacing" value={letterSpacing} min={-20} max={50} step={0.1} unit="px" onChange={setLetterSpacing} />
+            <Slider label="Word spacing" value={wordSpacing} min={-20} max={100} step={0.5} unit="px" onChange={setWordSpacing} />
 
-          {/* // --------- FONT METADATA --------- */}
-          <div>Metadata:</div>
-          <div>
-            <ul>
-              <li>File Name: {metadata.fileName}</li>
-              <li>Format: {metadata.format}</li>
-              <li>Font Family: {metadata.fontFamily}</li>
-              <li>Font Subfamily: {metadata.fontSubfamily}</li>
-              <li>Full Name: {metadata.fullName}</li>
-              <li>Version: {metadata.version}</li>
-            </ul>
-          </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Font color</label>
+              <ColorRow value={color} onChange={setColor} />
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Background</label>
+              <ColorRow value={bgColor} onChange={setBgColor} />
+            </div>
+
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Sample text</label>
+              <div className="flex flex-col gap-1">
+                {SAMPLE_TEXTS.map((s, i) => (
+                  <button
+                    key={i}
+                    className="text-left text-xs text-neutral-400 hover:text-neutral-100 truncate"
+                    onClick={() => setText(s)}
+                  >
+                    # {s.split('\n')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <main className="flex flex-col min-h-0">
+            <div
+              className="flex-1 overflow-auto p-10"
+              style={{ background: bgColor }}
+            >
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) => setText((e.target as HTMLDivElement).innerText)}
+                className="outline-none whitespace-pre-wrap wrap-break-word"
+                style={{
+                  fontFamily: familyId ? `"${familyId}"` : undefined,
+                  fontSize: `${fontSize}px`,
+                  lineHeight,
+                  letterSpacing: `${letterSpacing}px`,
+                  wordSpacing: `${wordSpacing}px`,
+                  color,
+                }}
+              >
+                {text}
+              </div>
+            </div>
+          </main>
+
+          {/* meta data list */}
+          <aside className="border-l border-neutral-800 p-5 overflow-y-auto text-sm">
+            <h2 className="text-xs uppercase tracking-wider text-neutral-400 mb-3">Metadata</h2>
+            <MetadataList metadata={metadata} />
+          </aside>
         </div>
         ) : (
           // --------- DRAG DROP ZONE ---------
@@ -99,7 +150,7 @@ function App() {
               className={`w-full max-w-2xl border-2 border-dashed rounded-2xl p-16 text-center cursor-pointer transition ${
                 isDragging
                   ? 'border-blue-500 bg-blue-500/5'
-                  : 'border-neutral-700 hover:border-neutral-500'
+                  : 'border-neutral-700 hover:border-neutral-400'
               }`}
             >
               <input
@@ -115,13 +166,97 @@ function App() {
               <div className="text-2xl font-medium mb-2">
                 {isLoading ? 'Loading…' : 'Drop OTF / TTF here'}
               </div>
-              <div className="text-sm text-neutral-500">or click to select</div>
+              <div className="text-sm text-neutral-400">or click to select</div>
               {error && <div className="mt-4 text-sm text-red-400">{error}</div>}
             </label>
           </div>
         )
       }
     </div>    
+  )
+}
+
+function Slider({
+  label, value, min, max, step, unit, onChange,
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  step: number
+  unit?: string
+  onChange: (v: number) => void
+}) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-1.5">
+        <label className="text-xs uppercase tracking-wider text-neutral-400">{label}</label>
+        <span className="text-xs tabular-nums text-neutral-300">
+          {value}{unit ?? ''}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="w-full accent-blue-500"
+      />
+    </div>
+  )
+}
+
+function ColorRow({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="color"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-9 h-9 rounded bg-transparent border border-neutral-700 cursor-pointer"
+      />
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="flex-1 bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-xs font-mono"
+      />
+    </div>
+  )
+}
+
+function MetadataList({ metadata }: { metadata: FontMetadata }) {
+  const rows: Array<[string, string | number | undefined]> = [
+    ['Family', metadata.fontFamily],
+    ['Subfamily', metadata.fontSubfamily],
+    ['Full name', metadata.fullName],
+    ['Format', metadata.format],
+    ['Version', metadata.version],
+    ['Glyphs', metadata.numGlyphs],
+    ['Designer', metadata.designer],
+    ['Designer URL', metadata.designerURL],
+    ['Manufacturer', metadata.manufacturer],
+    ['Manufacturer URL', metadata.manufacturerURL],
+    ['Copyright', metadata.copyright],
+    ['Trademark', metadata.trademark],
+    ['License', metadata.license],
+    ['License URL', metadata.licenseURL],
+    ['Description', metadata.description],
+    ['Unique ID', metadata.uniqueID],
+  ]
+  return (
+    <dl className="space-y-2">
+      {rows
+        .filter(([, v]) => v !== undefined && v !== null && v !== '')
+        .map(([k, v]) => (
+          <div key={k}>
+            <dt className="text-[10px] uppercase tracking-wider text-neutral-400">{k}</dt>
+            <dd className="text-xs text-neutral-200 wrap-break-word">{String(v)}</dd>
+          </div>
+        ))}
+    </dl>
   )
 }
 
