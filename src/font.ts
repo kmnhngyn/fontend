@@ -40,7 +40,7 @@ export async function loadFont(
     return loadFontFromBuffer(buffer, file.name, familyId)
 }
 
-export async function loadFontFromUrl(
+export async function loadFontFromPath(
   url: string,
   fileName: string,
   familyId: string,
