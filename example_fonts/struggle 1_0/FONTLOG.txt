@@ -1,0 +1,33 @@
+FONTLOG for the struggle font
+
+This file provides detailed information on the struggle Font Software.
+This information should be distributed along with the struggle fonts
+and any derivative works.
+
+Basic Font Information
+
+struggle is a Unicode typeface family that supports all languages that
+use the Latin script and its variants, and could be expanded to support other
+scripts.
+
+ChangeLog
+
+21 March 2024 (falk) struggle Version 0.001
+- Initial release
+
+7 April 2024 (falk) struggle Version 0.003
+- Now has all the characters i wanted to include from the start, created rotalics
+- Still working on spacing and kerning
+
+17 April 2024 (falk) struggle Version 0.004
+- Spaced and kerned for the first time
+
+16 May 2024 (falk) struggle Version 1.000
+- Added arrow characters
+- Additional spacing and kerning improvements
+- Added more metadata
+
+Acknowledgements
+
+If you make modifications be sure to add your name (N), email (E), web-address
+(if you have one) (W) and description (D). This list is in alphabetical order.
