@@ -277,7 +277,7 @@ function App() {
                   fontend
                 </h2>
                 <p className="mt-6 text-sm md:text-base text-neutral-400 max-w-md">
-                  Drop a font, see how it really looks. Sliders, colors, sample text - all in your browser, nothing uploaded anywhere.
+                  Drop a font, see how it really looks. Sliders, colors, sample text - all in your browser, nothing stored anywhere.
                 </p>
                 <div className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
                   <span className="inline-block w-2 h-2 rounded-full bg-[#d4ff00]" />
