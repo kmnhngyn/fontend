@@ -296,7 +296,7 @@ function App() {
                 <div className="flex-1 h-px bg-neutral-800" />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {EXAMPLE_FONTS.map((ex) => (
                   <button
                     key={ex.fileName}
