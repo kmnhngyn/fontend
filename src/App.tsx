@@ -126,40 +126,38 @@ function App() {
 
   return (
     <div className='min-h-full flex flex-col'>
-      <header className='border-b border-neutral-800 px-6 py-4 flex items-center justify-between gap-4'>
-        <div>
-          <h1
-            className='font-semibold tracking-tight'
-            style={{ fontFamily: '"Thold-Regular", ui-sans-serif, system-ui, sans-serif', fontSize: '2.5rem', lineHeight: 1 }}
-          >
-            fontend
-          </h1>
-          <p className='text-xs text-neutral-400 mt-1'>A font tester - everything lives in your browser, nothing is stored</p>
-        </div>
-        {metadata && (
-          <>
-            <input
-              ref={previewInputRef}
-              type="file"
-              accept=".otf,.ttf,font/otf,font/ttf"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0]
-                if (f) handleFile(f)
-                e.target.value = ''
-              }}
-            />
-            <button
-              onClick={() => previewInputRef.current?.click()}
-              disabled={isLoading}
-              className="text-xs px-3 py-2 rounded border border-neutral-700 hover:border-neutral-400 text-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+      {metadata && (
+        <header className='border-b border-neutral-800 px-6 py-4 flex items-center justify-between gap-4'>
+          <div>
+            <h1
+              className='font-semibold tracking-tight'
+              style={{ fontFamily: '"Thold-Regular", ui-sans-serif, system-ui, sans-serif', fontSize: '2.5rem', lineHeight: 1 }}
             >
-              <span aria-hidden>↑</span>
-              {isLoading ? 'Loading...' : 'Upload font'}
-            </button>
-          </>
-        )}
-      </header>
+              <a href="." className="hover:text-[#d4ff00] transition">fontend</a>
+            </h1>
+            <p className='text-xs text-neutral-400 mt-1'>A font tester - everything lives in your browser, nothing is stored</p>
+          </div>
+          <input
+            ref={previewInputRef}
+            type="file"
+            accept=".otf,.ttf,font/otf,font/ttf"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) handleFile(f)
+              e.target.value = ''
+            }}
+          />
+          <button
+            onClick={() => previewInputRef.current?.click()}
+            disabled={isLoading}
+            className="text-xs px-3 py-2 rounded border border-neutral-700 hover:border-[#d4ff00] hover:text-[#d4ff00] text-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            <span aria-hidden>↑</span>
+            {isLoading ? 'Loading...' : 'Upload font'}
+          </button>
+        </header>
+      )}
 
       {/* show font preview OR drag drap zone */}
       {metadata ?  (
@@ -264,18 +262,39 @@ function App() {
           </aside>
         </div>
         ) : (
-          // --------- LANDING: UPLOAD + EXAMPLES ---------
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="w-full max-w-2xl space-y-8">
+          // --------- LANDING!!! ---------
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* HERO: huge title left, drop zone right */}
+            <div className="grid grid-cols-1 md:grid-cols-[1.6fr_1fr] flex-1 min-h-0">
+              <div className="flex flex-col justify-center px-6 md:px-12 py-10 border-b md:border-b-0 md:border-r border-neutral-800">
+                <h2
+                  className="font-bold leading-[0.85] tracking-tight"
+                  style={{
+                    fontFamily: '"Thold-Regular", ui-sans-serif, system-ui, sans-serif',
+                    fontSize: 'clamp(4rem, 13vw, 11rem)',
+                  }}
+                >
+                  fontend
+                </h2>
+                <p className="mt-6 text-sm md:text-base text-neutral-400 max-w-md">
+                  Drop a font, see how it really looks. Sliders, colors, sample text - all in your browser, nothing uploaded anywhere.
+                </p>
+                <div className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#d4ff00]" />
+                  Local & private
+                </div>
+              </div>
+
+              {/* DROP ZONE ON THE RIGHT */}
               <label
                 onDragEnter={(e) => { e.preventDefault(); setIsDragging(true) }}
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={onDrop}
-                className={`block w-full border-2 border-dashed rounded-2xl p-16 text-center cursor-pointer transition ${
+                className={`relative flex flex-col items-center justify-center text-center px-6 py-10 cursor-pointer transition ${
                   isDragging
-                    ? 'border-blue-500 bg-blue-500/5'
-                    : 'border-neutral-700 hover:border-neutral-400'
+                    ? 'bg-[#d4ff00]/10'
+                    : 'hover:bg-neutral-900'
                 }`}
               >
                 <input
@@ -288,42 +307,55 @@ function App() {
                     if (f) handleFile(f)
                   }}
                 />
-                <div className="text-2xl font-medium mb-2">
-                  {isLoading ? 'Loading…' : 'Drop your OTF / TTF here'}
+                <div
+                  className="text-3xl md:text-4xl font-medium leading-tight"
+                  style={{ fontFamily: '"Thold-Regular", ui-sans-serif, sans-serif' }}
+                >
+                  {isLoading ? 'Loading...' : (
+                    <>Drop a <span className="text-[#d4ff00]">font here ↑</span></>
+                  )}
                 </div>
-                <div className="text-sm text-neutral-400">or click to select a file from your computer</div>
-                {error && <div className="mt-4 text-sm text-red-400">{error}</div>}
+                <div className="mt-3 text-xs text-neutral-500 uppercase tracking-[0.2em]">
+                  OTF / TTF - or click to select
+                </div>
+                {error && <div className="mt-4 text-xs text-red-400 max-w-xs">{error}</div>}
               </label>
+            </div>
 
-              <div className="flex items-center gap-3 text-xs uppercase tracking-wider text-neutral-500">
-                <div className="flex-1 h-px bg-neutral-800" />
-                <span>or try an example</span>
-                <div className="flex-1 h-px bg-neutral-800" />
+            {/* EXAMPLE FONT ROWS */}
+            <div className="border-t border-neutral-800">
+              <div className="px-6 md:px-12 py-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                Or try a sample
               </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {EXAMPLE_FONTS.map((ex) => (
-                  <button
-                    key={ex.fileName}
-                    disabled={isLoading}
-                    onClick={() => handleExampleFont(ex)}
-                    className="border border-neutral-800 hover:border-neutral-400 rounded-xl p-4 text-left transition disabled:opacity-50 disabled:cursor-not-allowed"
+              {EXAMPLE_FONTS.map((ex) => (
+                <button
+                  key={ex.url}
+                  disabled={isLoading}
+                  onClick={() => handleExampleFont(ex)}
+                  className="group w-full flex items-center justify-between gap-6 border-t border-neutral-800 px-6 md:px-12 py-3 md:py-4 text-left transition hover:bg-[#d4ff00]/5 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span
+                    className="text-3xl md:text-5xl text-neutral-200 group-hover:text-[#d4ff00] transition truncate"
+                    style={{ fontFamily: ex.fontFamily }}
                   >
-                    <div className="text-sm font-medium text-neutral-100">{ex.name}</div>
-                    <div className="text-[11px] text-neutral-500 mt-1 truncate">{ex.fileName}</div>
-                  </button>
-                ))}
-              </div>
+                    {ex.name}
+                  </span>
+                  <span className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-neutral-500 group-hover:text-[#d4ff00] transition flex items-center gap-2">
+                    Try
+                    <span aria-hidden className="text-base">→</span>
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
         )
       }
 
-      <footer className="border-t border-neutral-800 px-6 py-4 text-xs text-neutral-500 flex items-center justify-between">
+      <footer className="border-t border-neutral-800 px-6 md:px-12 py-4 text-xs text-neutral-500 flex items-center justify-between">
         <div>© {new Date().getFullYear()} fontend</div>
         <nav className="flex items-center gap-4">
-          <a href="#" className="hover:text-neutral-200 transition">Impressum</a>
-          <a href="#" className="hover:text-neutral-200 transition">Datenschutz</a>
+          <a href="#" className="hover:text-[#d4ff00] transition">Impressum</a>
+          <a href="#" className="hover:text-[#d4ff00] transition">Datenschutz</a>
         </nav>
       </footer>
     </div>
