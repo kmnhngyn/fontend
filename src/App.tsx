@@ -161,11 +161,12 @@ function App() {
 
       {/* show font preview OR drag drap zone */}
       {metadata ?  (
-        // --------- FONT PREVIEW ---------
+        // --------- FONT PREVIEW PAGE ---------
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[260px_1fr_280px] min-h-0">
+          {/* --------- SIDEBAR WITH SLIDERS ETC --------- */}
           <aside className="border-r border-neutral-800 p-5 space-y-5 overflow-y-auto">
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Example fonts</label>
+              <label className="block text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 mb-2">Sample fonts</label>
               <div className="flex flex-col gap-1.5">
                 {EXAMPLE_FONTS.map((ex) => {
                   const active = activeExampleUrl === ex.url
@@ -176,7 +177,7 @@ function App() {
                       onClick={() => handleExampleFont(ex)}
                       className={`text-left text-xs px-2 py-1.5 rounded border transition disabled:opacity-50 disabled:cursor-not-allowed ${
                         active
-                          ? 'border-blue-500 bg-blue-500/10 text-neutral-100'
+                          ? 'border-[#d4ff00] bg-[#d4ff00]/10 text-neutral-100'
                           : 'border-neutral-800 hover:border-neutral-600 text-neutral-300'
                       }`}
                       style={{ fontFamily: ex.fontFamily}}
@@ -195,16 +196,16 @@ function App() {
             <Slider label="Word spacing" value={wordSpacing} min={-20} max={100} step={0.5} unit="px" onChange={setWordSpacing} />
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Font color</label>
+              <label className="block text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 mb-2">Font color</label>
               <ColorRow value={color} onChange={setColor} />
             </div>
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Background</label>
+              <label className="block text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 mb-2">Background</label>
               <ColorRow value={bgColor} onChange={setBgColor} />
             </div>
 
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-400 mb-2">Sample text</label>
+              <label className="block text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 mb-2">Sample text</label>
               <div className="flex flex-col gap-1">
                 {SAMPLE_TEXTS.map((s, i) => (
                   <button
@@ -222,7 +223,7 @@ function App() {
           {/* // --------- MAIN VIEW WITH TEXTAREA --------- */}
           <main className="flex flex-col min-h-0">
             <div className="border-b border-neutral-800 px-6 py-3 flex items-baseline gap-3">
-              <div className="text-[10px] uppercase tracking-wider text-neutral-500 shrink-0">Current font</div>
+              <div className="text-[0.6rem] uppercase tracking-wider text-neutral-500 shrink-0">Current font</div>
               <div className="text-sm font-medium text-neutral-100 truncate">
                 {metadata.fontFamily ?? metadata.fileName}
               </div>
@@ -257,7 +258,7 @@ function App() {
 
           {/* // --------- META DATA LIST --------- */}
           <aside className="border-l border-neutral-800 p-5 overflow-y-auto text-sm">
-            <h2 className="text-xs uppercase tracking-wider text-neutral-400 mb-3">Metadata</h2>
+            <h2 className="text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400 mb-3">Metadata</h2>
             <MetadataList metadata={metadata} />
           </aside>
         </div>
@@ -279,7 +280,7 @@ function App() {
                 <p className="mt-6 text-sm md:text-base text-neutral-400 max-w-md">
                   Drop a font, see how it really looks. Sliders, colors, sample text - all in your browser, nothing stored anywhere.
                 </p>
-                <div className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+                <div className="mt-4 inline-flex items-center gap-2 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500">
                   <span className="inline-block w-2 h-2 rounded-full bg-[#d4ff00]" />
                   Local & private
                 </div>
@@ -324,7 +325,7 @@ function App() {
 
             {/* EXAMPLE FONT ROWS */}
             <div className="border-t border-neutral-800">
-              <div className="px-6 md:px-12 py-2 text-[10px] uppercase tracking-[0.2em] text-neutral-500">
+              <div className="px-6 md:px-12 py-2 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500">
                 Or try a sample
               </div>
               {EXAMPLE_FONTS.map((ex) => (
@@ -340,7 +341,7 @@ function App() {
                   >
                     {ex.name}
                   </span>
-                  <span className="shrink-0 text-[10px] uppercase tracking-[0.2em] text-neutral-500 group-hover:text-[#d4ff00] transition flex items-center gap-2">
+                  <span className="shrink-0 text-[0.6rem] uppercase tracking-[0.2em] text-neutral-500 group-hover:text-[#d4ff00] transition flex items-center gap-2">
                     Try
                     <span aria-hidden className="text-base">→</span>
                   </span>
@@ -351,7 +352,7 @@ function App() {
         )
       }
 
-      <footer className="border-t border-neutral-800 px-6 md:px-12 py-4 text-xs text-neutral-500 flex items-center justify-between">
+      <footer className="border-t border-neutral-800 px-6 py-4 text-xs text-neutral-500 flex items-center justify-between">
         <div>© {new Date().getFullYear()} fontend</div>
         <nav className="flex items-center gap-4">
           <a href="#" className="hover:text-[#d4ff00] transition">Impressum</a>
@@ -376,7 +377,7 @@ function Slider({
   return (
     <div>
       <div className="flex items-baseline justify-between mb-1.5">
-        <label className="text-xs uppercase tracking-wider text-neutral-400">{label}</label>
+        <label className="text-[0.6rem] uppercase tracking-[0.2em] text-neutral-400">{label}</label>
         <span className="text-xs tabular-nums text-neutral-300">
           {value}{unit ?? ''}
         </span>
@@ -388,7 +389,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full accent-blue-500"
+        className="w-full accent-[#d4ff00]"
       />
     </div>
   )
@@ -438,7 +439,7 @@ function MetadataList({ metadata }: { metadata: FontMetadata }) {
         .filter(([, v]) => v !== undefined && v !== null && v !== '')
         .map(([k, v]) => (
           <div key={k}>
-            <dt className="text-[10px] uppercase tracking-wider text-neutral-400">{k}</dt>
+            <dt className="text-[0.6rem] uppercase tracking-wider text-neutral-400">{k}</dt>
             <dd><CollapsibleValue value={String(v)} /></dd>
           </div>
         ))}
@@ -481,7 +482,7 @@ function CollapsibleValue({ value, clampLines = 3 }: { value: string; clampLines
       {overflows && (
         <button
           onClick={() => setExpanded((v) => !v)}
-          className="mt-1 text-[10px] uppercase tracking-wider text-blue-400 hover:text-blue-300"
+          className="mt-1 text-[0.6rem] uppercase tracking-[0.2em] text-[#d4ff00]/80 hover:text-[#d4ff00]"
         >
           {expanded ? 'Show less' : 'Show more'}
         </button>
