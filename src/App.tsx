@@ -110,22 +110,6 @@ function App() {
     }
   }
 
-  // preload example fonts so the buttons can render their label in the actual font
-  useEffect(() => {
-    EXAMPLE_FONTS.forEach(async (ex) => {
-      try {
-        const res = await fetch(ex.url)
-        if (!res.ok) return
-        const buffer = await res.arrayBuffer()
-        const face = new FontFace(ex.fontFamily, buffer)
-        await face.load()
-        document.fonts.add(face)
-      } catch {
-        // silent: buttons just fall back to system font
-      }
-    })
-  }, [])
-
   // focus textarea + put caret at end whenever a new font loads
   // so user sees blinking cursor
   useEffect(() => {

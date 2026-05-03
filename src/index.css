@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+/* fonts shipped with the app - declared in CSS so the browser starts
+   loading them during HTML parsing (before React even runs). font-display: block
+   keeps text invisible until the font is ready instead of showing a fallback,
+   which is what causes the visible flash:
+   https://stackoverflow.com/questions/1330825/preloading-font-face-fonts */
+@font-face {
+  font-family: 'Thold-Regular';
+  src: url('/example_fonts/Thold-Regular.otf') format('opentype');
+  font-display: block;
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'struggle-regular';
+  src: url('/example_fonts/struggle-regular.otf') format('opentype');
+  font-display: block;
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body, #root {
   height: 100%;
 }
