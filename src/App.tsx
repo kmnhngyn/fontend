@@ -128,8 +128,13 @@ function App() {
     <div className='min-h-full flex flex-col'>
       <header className='border-b border-neutral-800 px-6 py-4 flex items-center justify-between gap-4'>
         <div>
-          <h1 className='text-lg font-semibold tracking-tight'>fontend</h1>
-          <p className='text-xs text-neutral-400'>A font tester - everything lives in your browser, nothing is stored</p>
+          <h1
+            className='font-semibold tracking-tight'
+            style={{ fontFamily: '"Thold-Regular", ui-sans-serif, system-ui, sans-serif', fontSize: '2.5rem', lineHeight: 1 }}
+          >
+            fontend
+          </h1>
+          <p className='text-xs text-neutral-400 mt-1'>A font tester - everything lives in your browser, nothing is stored</p>
         </div>
         {metadata && (
           <>
