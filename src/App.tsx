@@ -2,6 +2,18 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import './App.css'
 import { loadFont, loadFontFromPath } from './font';
 import type { FontMetadata } from './types';
+import { Impressum } from './legal/Impressum';
+import { Datenschutz } from './legal/Datenschutz';
+
+type Route = 'home' | 'impressum' | 'datenschutz'
+
+function getRouteFromHash(): Route {
+  if (typeof window === 'undefined') return 'home'
+  const h = window.location.hash
+  if (h === '#/impressum') return 'impressum'
+  if (h === '#/datenschutz') return 'datenschutz'
+  return 'home'
+}
 
 const SAMPLE_TEXTS = [
   'The quick brown fox jumps over the lazy dog bodo.',
@@ -39,6 +51,18 @@ function App() {
   const [wordSpacing, setWordSpacing] = useState(0)
   const [color, setColor] = useState('#f4a4c0')
   const [bgColor, setBgColor] = useState('#0056d6')
+
+  const [route, setRoute] = useState<Route>(() => getRouteFromHash())
+  const isLegal = route !== 'home'
+
+  useEffect(() => {
+    const onHashChange = () => {
+      setRoute(getRouteFromHash())
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault()
@@ -126,7 +150,7 @@ function App() {
 
   return (
     <div className='min-h-full flex flex-col'>
-      {metadata && (
+      {(metadata || isLegal) && (
         <header className='border-b border-neutral-800 px-6 py-4 flex items-center justify-between gap-4'>
           <div>
             <h1
@@ -137,30 +161,36 @@ function App() {
             </h1>
             <p className='text-xs text-neutral-400 mt-1'>A font tester - everything lives in your browser, nothing is stored</p>
           </div>
-          <input
-            ref={previewInputRef}
-            type="file"
-            accept=".otf,.ttf,font/otf,font/ttf"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0]
-              if (f) handleFile(f)
-              e.target.value = ''
-            }}
-          />
-          <button
-            onClick={() => previewInputRef.current?.click()}
-            disabled={isLoading}
-            className="text-xs px-3 py-2 rounded border border-neutral-700 hover:border-[#d4ff00] hover:text-[#d4ff00] text-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            <span aria-hidden>↑</span>
-            {isLoading ? 'Loading...' : 'Upload font'}
-          </button>
+          {metadata && !isLegal && (
+            <>
+              <input
+                ref={previewInputRef}
+                type="file"
+                accept=".otf,.ttf,font/otf,font/ttf"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0]
+                  if (f) handleFile(f)
+                  e.target.value = ''
+                }}
+              />
+              <button
+                onClick={() => previewInputRef.current?.click()}
+                disabled={isLoading}
+                className="text-xs px-3 py-2 rounded border border-neutral-700 hover:border-[#d4ff00] hover:text-[#d4ff00] text-neutral-100 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                <span aria-hidden>↑</span>
+                {isLoading ? 'Loading...' : 'Upload font'}
+              </button>
+            </>
+          )}
         </header>
       )}
 
-      {/* show font preview OR drag drap zone */}
-      {metadata ?  (
+      {/* legal pages take precedence - keep app state intact behind them */}
+      {route === 'impressum' ? <Impressum /> :
+       route === 'datenschutz' ? <Datenschutz /> :
+       metadata ?  (
         // --------- FONT PREVIEW PAGE ---------
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-[260px_1fr_280px] min-h-0">
           {/* --------- SIDEBAR WITH SLIDERS ETC --------- */}
@@ -366,11 +396,11 @@ function App() {
         )
       }
 
-      <footer className="border-t border-neutral-800 px-6 py-4 text-xs text-neutral-500 flex items-center justify-between">
+      <footer className="border-t border-neutral-800 px-6 md:px-12 py-4 text-xs text-neutral-500 flex items-center justify-between">
         <div>© {new Date().getFullYear()} fontend</div>
         <nav className="flex items-center gap-4">
-          <a href="#" className="hover:text-[#d4ff00] transition">Impressum</a>
-          <a href="#" className="hover:text-[#d4ff00] transition">Datenschutz</a>
+          <a href="#/impressum" className="hover:text-[#d4ff00] transition">Impressum / Imprint</a>
+          <a href="#/datenschutz" className="hover:text-[#d4ff00] transition">Datenschutz / Privacy Policy</a>
         </nav>
       </footer>
     </div>
