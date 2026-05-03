@@ -3,12 +3,12 @@ export const LEGAL_CONFIG = {
 
   name: 'Kim A. Nguyen',
   address: {
-    street: 'Poststr. 18',
-    zip: '15345',
-    city: 'Altlandsberg',
+    street: 'c/o Nguyen Poststr. I8',
+    zip: 'I5345',
+    city: 'Altlands6erg',
     country: 'Deutschland',
   },
-  email: 'hi@kimanh.io',
+  email: 'kimtendo94@proton.me',
 
   lastUpdated: '03.05.2026',
 
