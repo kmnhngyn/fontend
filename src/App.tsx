@@ -222,7 +222,7 @@ function App() {
 
           {/* // --------- MAIN VIEW WITH TEXTAREA --------- */}
           <main className="flex flex-col min-h-0">
-            <div className="border-b border-neutral-800 px-6 py-3 flex items-baseline gap-3">
+            <div className="border-b border-neutral-800 px-6 py-3 flex items-center gap-3">
               <div className="text-[0.6rem] uppercase tracking-wider text-neutral-500 shrink-0">Current font</div>
               <div className="text-sm font-medium text-neutral-100 truncate">
                 {metadata.fontFamily ?? metadata.fileName}
@@ -230,6 +230,20 @@ function App() {
               {metadata.fontFamily && (
                 <div className="text-[11px] text-neutral-500 truncate">{metadata.fileName}</div>
               )}
+
+              {/* INFO BUTTON / ICON */}
+              <div className="ml-auto relative group shrink-0">
+                <button
+                  type="button"
+                  aria-label="How to use"
+                  className="w-4 h-4 rounded-full border border-neutral-700 text-[10px] text-neutral-400 hover:border-[#d4ff00] hover:text-[#d4ff00] flex items-center justify-center transition"
+                >
+                  i
+                </button>
+                <div className="pointer-events-none absolute right-0 top-full mt-2 w-64 rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-xs text-neutral-300 opacity-0 group-hover:opacity-100 transition shadow-lg z-10">
+                  Click anywhere in the text area and type to try the font with your own words.
+                </div>
+              </div>
             </div>
             {/* // --------- FONT TEXTAREA --------- */}
             <div
